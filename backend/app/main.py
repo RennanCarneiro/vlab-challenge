@@ -5,6 +5,7 @@ from sqlalchemy import func # <--- IMPORTANTE: Importa as funções de agregaç�
 from sqlalchemy.exc import OperationalError
 from typing import List, Optional
 from . import models, schemas, database
+from fastapi.middleware.cors import CORSMiddleware
 
 # --- RETRY LOGIC ---
 #evitar que o python carregue antes do DB carregar.
@@ -19,6 +20,14 @@ for i in range(max_retries):
         time.sleep(2)
 
 app = FastAPI(title="V-Lab Challenge API")
+
+app.add_middleware(
+    CORSMiddleware, 
+    allow_origins = ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- ROTAS BÁSICAS ---
 

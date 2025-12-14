@@ -2,6 +2,7 @@
 #utilizar pydantic para garantir que a API rejeite dados invalidos antes mesmo de salvar
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List
 
 # Base comum para entrada e leitura
 class ColetaBase(BaseModel):
@@ -28,3 +29,12 @@ class ColetaResponse(ColetaBase):
 
     class Config:
         from_attributes = True
+
+#schemas para o dashboard
+class MetricItem(BaseModel):
+    label: str  
+    value: float 
+
+class DashboardResponse(BaseModel):
+    media_preco_combustivel: List[MetricItem]
+    total_consumo_veiculo: List[MetricItem]
