@@ -30,5 +30,15 @@ services:
     environment:
       DATABASE_URL: postgresql://user:password@db:5432/vlab_db
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
