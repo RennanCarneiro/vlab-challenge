@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
 from typing import List, Optional
-from . import models, schemas, database
+from app import models, schemas, database
 
 # Configuração do Redis
 # Tenta conectar no container 'redis', se falhar (local sem docker), tenta localhost
