@@ -17,6 +17,13 @@ services:
       timeout: 5s
       retries: 5
 
+  # --- NOVO SERVIÇO: REDIS ---
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+  # ---------------------------
+
   backend:
     build: ./backend
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -27,8 +34,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis: # Backend agora espera o Redis também
+        condition: service_started
     environment:
       DATABASE_URL: postgresql://user:password@db:5432/vlab_db
+      REDIS_URL: redis://redis:6379 # URL interna do Docker
 
   frontend:
     build: ./frontend
