@@ -11,21 +11,26 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // NOVO: Estado do Filtro
-  const [filtroCombustivel, setFiltroCombustivel] = useState<string>('');
+  // Estado único para todos os filtros
+  const [filtros, setFiltros] = useState({
+    combustivel: '',
+    cidade: '',
+    veiculo: ''
+  });
 
-  // Função para buscar dados (agora aceita parametro opcional)
-  const fetchData = async (combustivel: string = '') => {
+  // Função central que busca dados baseada nos filtros atuais
+  const fetchData = async () => {
     try {
-      // Monta a URL com filtro se existir
-      let urlColetas = 'http://localhost:8000/coletas/?limit=10';
-      if (combustivel) {
-        urlColetas += `&combustivel=${combustivel}`;
-      }
+      // Monta a URL dinâmica
+      const params = new URLSearchParams();
+      params.append('limit', '10');
+      if (filtros.combustivel) params.append('combustivel', filtros.combustivel);
+      if (filtros.cidade) params.append('cidade', filtros.cidade);
+      if (filtros.veiculo) params.append('tipo_veiculo', filtros.veiculo);
 
       const [dashRes, listaRes] = await Promise.all([
         axios.get('http://localhost:8000/dashboard'),
-        axios.get(urlColetas)
+        axios.get(`http://localhost:8000/coletas/?${params.toString()}`)
       ]);
       
       setDashboard(dashRes.data);
@@ -38,25 +43,23 @@ function App() {
     }
   };
 
-  // Carrega ao iniciar
+  // Recarrega sempre que mudar um filtro (Efeito colateral)
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [filtros]); // <--- O segredo: roda sempre que 'filtros' mudar
 
-  // NOVO: Quando o usuário muda o select, recarrega a tabela
-  const handleFiltroChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const valor = e.target.value;
-    setFiltroCombustivel(valor);
-    fetchData(valor); // Recarrega os dados com o novo filtro
+  // Função genérica para atualizar qualquer filtro
+  const handleFilterChange = (campo: string, valor: string) => {
+    setFiltros(prev => ({ ...prev, [campo]: valor }));
   };
 
-  if (loading) return <div className="loading"> Carregando...</div>;
-  if (error) return <div className="loading" style={{ color: 'red' }}>⚠️ {error}</div>;
+  if (loading) return <div className="loading">Carregando...</div>;
+  if (error) return <div className="loading" style={{ color: 'red' }}>{error}</div>;
 
   return (
     <div className="container">
       <header className="header">
-        <h1> V-Lab Monitor: Mercado de Combustíveis</h1>
+        <h1>V-Lab Monitor: Mercado de Combustíveis</h1>
       </header>
 
       {dashboard && (
@@ -67,20 +70,44 @@ function App() {
       )}
 
       <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-          <h2>Últimas Coletas</h2>
-          
-          {/* NOVO: O Dropdown de Filtro */}
-          <select 
-            value={filtroCombustivel} 
-            onChange={handleFiltroChange}
-            style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
-          >
-            <option value="">Todos os Combustíveis</option>
-            <option value="Gasolina">Gasolina</option>
-            <option value="Etanol">Etanol</option>
-            <option value="Diesel S10">Diesel S10</option>
-          </select>
+        <div className="filters-bar">
+          <h2>Filtros</h2>
+          <div className="filters-row">
+            {/* Filtro 1: Combustível */}
+            <select 
+              value={filtros.combustivel} 
+              onChange={(e) => handleFilterChange('combustivel', e.target.value)}
+              className="filter-input"
+            >
+              <option value="">Todos Combustíveis</option>
+              <option value="Gasolina">Gasolina</option>
+              <option value="Etanol">Etanol</option>
+              <option value="Diesel S10">Diesel S10</option>
+            </select>
+
+            {/* Filtro 2: Tipo de Veículo */}
+            <select 
+              value={filtros.veiculo} 
+              onChange={(e) => handleFilterChange('veiculo', e.target.value)}
+              className="filter-input"
+            >
+              <option value="">Todos Veículos</option>
+              <option value="Carro">Carro</option>
+              <option value="Moto">Moto</option>
+              <option value="Caminhão Leve">Caminhão Leve</option>
+              <option value="Carreta">Carreta</option>
+              <option value="Ônibus">Ônibus</option>
+            </select>
+
+            {/* Filtro 3: Cidade (Texto Livre) */}
+            <input 
+              type="text"
+              placeholder="Filtrar por Cidade..."
+              value={filtros.cidade}
+              onChange={(e) => handleFilterChange('cidade', e.target.value)}
+              className="filter-input"
+            />
+          </div>
         </div>
 
         <ColetasTable data={coletas} />

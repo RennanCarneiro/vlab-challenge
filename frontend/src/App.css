@@ -80,3 +80,22 @@
   font-size: 1.5rem;
   color: #666;
 }
+
+.filters-bar {
+  margin-bottom: 20px;
+}
+
+.filters-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap; /* Quebra linha em celular */
+}
+
+.filter-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex: 1; /* Faz os inputs ocuparem espaço igual */
+  min-width: 200px;
+}

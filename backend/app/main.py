@@ -58,11 +58,18 @@ def read_coletas(
     skip: int = 0, 
     limit: int = 100, 
     combustivel: Optional[str] = None,
+    cidade: Optional[str] = None,
+    tipo_veiculo: Optional[str] = None,
     db: Session = Depends(database.get_db)
 ):
     query = db.query(models.Coleta)
     if combustivel:
         query = query.filter(models.Coleta.tipo_combustivel.ilike(f"%{combustivel}%"))
+    if cidade:
+        query = query.filter(models.Coleta.cidade.ilike(f"%{cidade}%"))
+        
+    if tipo_veiculo:
+        query = query.filter(models.Coleta.tipo_veiculo.ilike(f"%{tipo_veiculo}%"))
     return query.offset(skip).limit(limit).all()
 
 # --- ROTA DASHBOARD COM CACHE 

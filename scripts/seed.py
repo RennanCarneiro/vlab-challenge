@@ -22,9 +22,18 @@ COMBUSTIVEIS = [
 
 TIPOS_VEICULO = ["Carro", "Moto", "Caminhão Leve", "Carreta", "Ônibus"]
 
+CIDADES_FIXAS = [
+    {"cidade": "Recife", "estado": "PE"},
+    {"cidade": "São Paulo", "estado": "SP"},
+    {"cidade": "Rio de Janeiro", "estado": "RJ"},
+    {"cidade": "Belo Horizonte", "estado": "MG"},
+    {"cidade": "Curitiba", "estado": "PR"}
+]
+
 def gerar_dado():
     """Gera um JSON de coleta fictícia"""
     combustivel = random.choice(COMBUSTIVEIS)
+    local = random.choice(CIDADES_FIXAS)
     
     # Gera preços e volumes variados
     preco_venda = round(random.uniform(combustivel["preco_min"], combustivel["preco_max"]), 2)
@@ -33,8 +42,8 @@ def gerar_dado():
     payload = {
         "identificador_posto": str(random.randint(1000, 9999)),
         "nome_posto": f"Posto {fake.company()}",
-        "cidade": fake.city(),
-        "estado": fake.state_abbr(),
+        "cidade": local["cidade"],
+        "estado": local["estado"],
         "data_coleta": datetime.now().isoformat(),
         "tipo_combustivel": combustivel["tipo"],
         "preco_venda": preco_venda,
