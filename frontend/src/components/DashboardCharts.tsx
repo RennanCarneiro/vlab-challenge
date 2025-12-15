@@ -32,18 +32,19 @@ export function DashboardCharts({ mediaPreco, consumoVeiculo }: Props) {
           <ResponsiveContainer>
             <PieChart>
               <Pie
-                data={consumoVeiculo as any[]} // Mudança 2 aqui também
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                fill="#82ca9d"
-                dataKey="value"
-                label
-              >
-                {consumoVeiculo.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
+              data={consumoVeiculo as any[]}
+              cx="50%"
+              cy="50%"
+              outerRadius={80}
+              fill="#82ca9d"
+              dataKey="value"
+              nameKey="label"  // <--- ADICIONE ESSA LINHA AQUI!
+              label
+            >
+              {consumoVeiculo.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
               <Tooltip />
               <Legend />
             </PieChart>
