@@ -1,4 +1,4 @@
-import { Coleta } from '../types';
+import type { Coleta } from '../types';
 
 interface Props {
   data: Coleta[];

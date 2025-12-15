@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { MetricItem } from '../types';
+import type { MetricItem } from '../types'; // <--- Mudança 1: import type
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -15,7 +15,8 @@ export function DashboardCharts({ mediaPreco, consumoVeiculo }: Props) {
         <h2>Média de Preço (R$/L)</h2>
         <div style={{ width: '100%', height: 300 }}>
           <ResponsiveContainer>
-            <BarChart data={mediaPreco}>
+            {/* Mudança 2: 'as any[]' para calar o erro chato do Recharts */}
+            <BarChart data={mediaPreco as any[]}>
               <XAxis dataKey="label" />
               <YAxis />
               <Tooltip />
@@ -31,7 +32,7 @@ export function DashboardCharts({ mediaPreco, consumoVeiculo }: Props) {
           <ResponsiveContainer>
             <PieChart>
               <Pie
-                data={consumoVeiculo}
+                data={consumoVeiculo as any[]} // Mudança 2 aqui também
                 cx="50%"
                 cy="50%"
                 outerRadius={80}

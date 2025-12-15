@@ -6,6 +6,7 @@ from sqlalchemy.exc import OperationalError
 from typing import List, Optional
 from . import models, schemas, database
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List, Optional
 
 # --- RETRY LOGIC ---
 #evitar que o python carregue antes do DB carregar.
@@ -40,8 +41,19 @@ def create_coleta(coleta: schemas.ColetaCreate, db: Session = Depends(database.g
     return db_coleta
 
 @app.get("/coletas/", response_model=List[schemas.ColetaResponse])
-def read_coletas(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
-    return db.query(models.Coleta).offset(skip).limit(limit).all()
+def read_coletas(
+    skip: int = 0, 
+    limit: int = 100, 
+    combustivel: Optional[str] = None, # <--- Novo Filtro
+    db: Session = Depends(database.get_db)
+):
+    query = db.query(models.Coleta)
+    
+    if combustivel:
+        # Filtra onde o tipo_combustivel é igual ao parametro (case insensitive)
+        query = query.filter(models.Coleta.tipo_combustivel.ilike(f"%{combustivel}%"))
+        
+    return query.offset(skip).limit(limit).all()
 
 # --- ROTAS NOVAS ---
 
