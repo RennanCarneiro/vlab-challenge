@@ -41,6 +41,15 @@ Pré-requisito: Ter o **Docker** instalado.
 * **Frontend Otimizado:** Uso de `Promise.all` para carregar gráficos e tabelas em paralelo.
 * **Resiliência:** Implementação de `Retry Pattern` na conexão do Backend com o Banco de Dados.
 
+## Testes Automatizados
+
+O projeto inclui testes unitários para garantir a integridade dos cálculos de KPI e filtros.
+Para rodar os testes dentro do container:
+
+```bash
+docker-compose exec backend pytest
+ ```
+
 ## Documentação da API (Swagger)
 
 Acesse a documentação interativa das rotas em:
