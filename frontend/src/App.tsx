@@ -30,8 +30,8 @@ function App() {
     fetchData();
   }, []);
 
-  if (loading) return <div className="loading">⏳ Carregando...</div>;
-  if (error) return <div className="loading" style={{ color: 'red' }}>⚠️ {error}</div>;
+  if (loading) return <div className="loading"> Carregando...</div>;
+  if (error) return <div className="loading" style={{ color: 'red' }}> {error}</div>;
 
   return (
     <div className="container">
